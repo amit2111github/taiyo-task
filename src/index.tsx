@@ -1,15 +1,42 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Navbar from './components/Navbar';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
+import store from './redux/store';
+import { Provider } from 'react-redux';
+import Contact from './components/Contact';
+import Edit from './components/Edit';
+
+import Chart from './components/Chart';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Provider store={store}>
+        <div className="w-full">
+          <Navbar />
+          <div className="md:ml-[7%] mt-[80px] md:mt-[0px]">
+            <Routes>
+              <Route path="/" element={<Navigate to="/contact" />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/contact/edit/:id" element={<Edit />} />
+              <Route path="/chart" element={<Chart />} />
+              <Route path="/*" element={<Navigate to="/contact" />} />
+            </Routes>
+          </div>
+        </div>
+      </Provider>
+    </Router>
   </React.StrictMode>
 );
 

@@ -5,25 +5,20 @@ import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { MapContainer, TileLayer } from 'react-leaflet';
+import { useQuery } from 'react-query';
 const WorldMap = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const url = 'https://disease.sh/v3/covid-19/countries';
-    axios(url).then((response: AxiosResponse) => {
-      console.log(response);
-      setData(response.data);
-    });
-    setLoading(false);
-  }, []);
+  const { isLoading, data } = useQuery('worldmap', () =>
+    fetch('https://disease.sh/v3/covid-19/countries').then((response) =>
+      response.json()
+    )
+  );
 
   const customMarker = L.icon({
     iconUrl: markerIcon,
     iconSize: [20, 25],
     iconAnchor: [15, 30],
   });
-  console.log(data);
-  return loading ? (
+  return isLoading ? (
     <div className="flex justify-center items-center mt-6">
       <i className="fa fa-spinner fa-spin text-[24px]"></i>
     </div>

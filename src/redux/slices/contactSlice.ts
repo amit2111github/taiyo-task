@@ -1,32 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ContactType } from '../../utils/types';
 
-// Define a type for a contact
-type Contact = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-};
-
-// Define a type for the slice state
 interface ContactsState {
-  contacts: Contact[];
+  contacts: ContactType[];
 }
 
-// Define the initial state using that type
 const initialState: ContactsState = {
   contacts: [],
 };
 
-// Create the slice with typed actions
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
-    addContact: (state, action: PayloadAction<Contact>) => {
+    addContact: (state, action: PayloadAction<ContactType>) => {
       state.contacts.push(action.payload);
     },
-    updateContact: (state, action: PayloadAction<Contact>) => {
+    updateContact: (state, action: PayloadAction<ContactType>) => {
       const { id, firstName, lastName, status } = action.payload;
       const existingContact = state.contacts.find(
         (contact) => contact.id === id
@@ -45,7 +35,6 @@ const contactsSlice = createSlice({
   },
 });
 
-// Export actions and reducer
 export const { addContact, updateContact, deleteContact } =
   contactsSlice.actions;
 

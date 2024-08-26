@@ -2,17 +2,13 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateContact } from '../redux/slices/contactSlice';
 import { useNavigate } from 'react-router-dom';
+import { ContactType, ErrorType } from '../utils/types';
 
-type Contact = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-};
-function EditForm({ contactDetails }: { contactDetails: Contact }) {
+function EditForm({ contactDetails }: { contactDetails: ContactType }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [contact, setContact] = useState<Contact>(contactDetails);
+  const [error, setError] = useState<ErrorType>({});
+  const [contact, setContact] = useState<ContactType>(contactDetails);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContact((contact) => ({
@@ -23,7 +19,23 @@ function EditForm({ contactDetails }: { contactDetails: Contact }) {
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    dispatch(updateContact({ ...contact }));
+    let { firstName, lastName, status } = contact;
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    setError({});
+    if (!firstName) {
+      setError({ firstName: 'First Name is required' });
+      return;
+    }
+    if (!lastName) {
+      setError({ lastName: 'Last Name is required' });
+      return;
+    }
+    if (!status) {
+      setError({ status: 'Please select status' });
+      return;
+    }
+    dispatch(updateContact({ ...contact, firstName, lastName, status }));
     navigate(-1);
   };
   const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,6 +62,7 @@ function EditForm({ contactDetails }: { contactDetails: Contact }) {
           placeholder="Enter First Name"
           required
         />
+        {error?.firstName && <p className="text-red-400">{error.firstName}</p>}
       </div>
       <div className="mb-5">
         <label
@@ -68,6 +81,7 @@ function EditForm({ contactDetails }: { contactDetails: Contact }) {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           required
         />
+        {error?.lastName && <p className="text-red-400">{error?.lastName}</p>}
       </div>
 
       <div className="flex items-center mb-4 gap-[20px]">
@@ -104,6 +118,7 @@ function EditForm({ contactDetails }: { contactDetails: Contact }) {
             Inactive
           </label>
         </div>
+        {error?.status && <p className="text-red-400">{error?.status}</p>}
       </div>
       <div className="flex justify-between gap-[20px] mt-2">
         <button

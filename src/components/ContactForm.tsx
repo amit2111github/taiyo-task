@@ -3,18 +3,18 @@ import { useDispatch } from 'react-redux';
 import { addContact } from '../redux/slices/contactSlice';
 import { v4 as uuidv4 } from 'uuid';
 
-type Contact = {
-  firstName: string;
-  lastName: string;
-  status: string;
-};
+import { ContactType, ErrorType } from '../utils/types';
+
 function ContactForm({ setShowForm }: { setShowForm: () => void }) {
   const dispatch = useDispatch();
-  const [contact, setContact] = useState<Contact>({
+  const [error, setError] = useState<ErrorType>({});
+  const [contact, setContact] = useState<ContactType>({
     firstName: '',
     lastName: '',
     status: '',
+    id: '',
   });
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContact((contact) => ({
       ...contact,
@@ -23,7 +23,23 @@ function ContactForm({ setShowForm }: { setShowForm: () => void }) {
   };
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    dispatch(addContact({ ...contact, id: uuidv4() }));
+    let { firstName, lastName, status } = contact;
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    setError({});
+    if (!firstName) {
+      setError({ firstName: 'First Name is required' });
+      return;
+    }
+    if (!lastName) {
+      setError({ lastName: 'Last Name is required' });
+      return;
+    }
+    if (!status) {
+      setError({ status: 'Please select status' });
+      return;
+    }
+    dispatch(addContact({ firstName, lastName, status, id: uuidv4() }));
     setShowForm();
   };
   return (
@@ -53,6 +69,7 @@ function ContactForm({ setShowForm }: { setShowForm: () => void }) {
           placeholder="Enter First Name"
           required
         />
+        {error?.firstName && <p className="text-red-400">{error.firstName}</p>}
       </div>
       <div className="mb-5">
         <label
@@ -71,6 +88,7 @@ function ContactForm({ setShowForm }: { setShowForm: () => void }) {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           required
         />
+        {error?.lastName && <p className="text-red-400">{error?.lastName}</p>}
       </div>
 
       <div className="flex items-center mb-4 gap-[20px]">
@@ -106,6 +124,7 @@ function ContactForm({ setShowForm }: { setShowForm: () => void }) {
           </label>
         </div>
       </div>
+      {error?.status && <p className="text-red-400">{error?.status}</p>}
       <div className="flex justify-center mt-2">
         <button
           type="submit"

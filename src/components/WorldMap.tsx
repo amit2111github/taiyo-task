@@ -2,8 +2,7 @@ import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import markerIcon from '../images/mapicon.png';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useQuery } from 'react-query';
 const WorldMap = () => {

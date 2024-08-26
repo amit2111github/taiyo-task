@@ -1,13 +1,8 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import EditForm from './EditForm';
-type Contact = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-};
+import { ContactType as Contact } from '../utils/types';
+
 type Contacts = { contacts: Contact[] };
 type ContactType = {
   contacts: Contacts;
